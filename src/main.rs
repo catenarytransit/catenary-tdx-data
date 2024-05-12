@@ -1,23 +1,25 @@
+use catenary_tdx_data::TRATrainLiveBoardList;
 use core::result::Result;
-use reqwest::{header::CONTENT_TYPE, header::AUTHORIZATION, *};
+use reqwest::{header::AUTHORIZATION, header::CONTENT_TYPE, *};
 use serde_json::*;
-use std::error::Error;
-use std::{collections::HashMap, fs::File, path::Path};
 use std::env;
 use std::env::consts::ARCH;
+use std::error::Error;
+use std::{collections::HashMap, fs::File, path::Path};
 
-static AUTH_URL: &str = "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token";
-static TEST_URL: &str = "https://tdx.transportdata.tw/api/basic/v2/Rail/TRA/LiveBoard/Station/1000?$filter=Direction eq 1&$format=JSON";
+static AUTH_URL: &str =
+    "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token";
+static TEST_URL: &str = "https://tdx.transportdata.tw/api/basic/v3/Rail/TRA/TrainLiveBoard";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
-
-    print!("{:?}", ARCH);
-
     let raw_path = match ARCH {
-        "x86_64" => format!("C:\\Users\\{}\\Downloads\\tdx-secret.json", env::var("USERNAME")?),
+        "x86_64" => format!(
+            "C:\\Users\\{}\\Downloads\\tdx-secret.json",
+            env::var("USERNAME")?
+        ),
 
-        &_ => todo!()
+        &_ => todo!(),
     };
     let file_path = Path::new(&raw_path);
     let file = File::open(file_path).expect("file not found");
@@ -45,13 +47,21 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
 
     let data_response = client
         .get(TEST_URL)
-        .header(AUTHORIZATION, access_token)
+        .header(AUTHORIZATION, access_token.clone())
         .send()
         .await?
         .text()
         .await?;
 
     println!("{:?}", data_response);
+
+    let data = client
+        .get(TEST_URL)
+        .header(AUTHORIZATION, access_token)
+        .send()
+        .await?
+        .json::<TRATrainLiveBoardList>()
+        .await?;
 
     Ok(())
 }
