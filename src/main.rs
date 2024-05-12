@@ -3,13 +3,23 @@ use reqwest::{header::CONTENT_TYPE, header::AUTHORIZATION, *};
 use serde_json::*;
 use std::error::Error;
 use std::{collections::HashMap, fs::File, path::Path};
+use std::env;
+use std::env::consts::ARCH;
 
 static AUTH_URL: &str = "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token";
 static TEST_URL: &str = "https://tdx.transportdata.tw/api/basic/v2/Rail/TRA/LiveBoard/Station/1000?$filter=Direction eq 1&$format=JSON";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
-    let file_path = Path::new("C:\\Users\\bookw\\Downloads\\tdx-secret.json");
+
+    print!("{:?}", ARCH);
+
+    let raw_path = match ARCH {
+        "x86_64" => format!("C:\\Users\\{}\\Downloads\\tdx-secret.json", env::var("USERNAME")?),
+
+        &_ => todo!()
+    };
+    let file_path = Path::new(&raw_path);
     let file = File::open(file_path).expect("file not found");
     let secret: HashMap<String, String> =
         serde_json::from_reader(file).expect("error while reading");
