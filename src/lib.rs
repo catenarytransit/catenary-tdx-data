@@ -1,33 +1,35 @@
 //use std::collections::HashMap;
-use iso8601::DateTime;
 use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
+#[allow(non_snake_case)]
 pub struct TRATrainLiveBoardList {
-    UpdateTime: String, //"2024-05-12T05:18:17.454Z" might need parser? idk
-    UpdateInterval: i32,
-    SrcUpdateTime: String,
-    SrcUpdateInterval: i32,
-    AuthorityCode: String,
-    TrainLiveBoards: Vec<TrainLiveBoards>,
-    Count: i64,
+    pub UpdateTime: String, //"2024-05-12T05:18:17.454Z"
+    pub UpdateInterval: i32,
+    pub SrcUpdateTime: String,
+    pub SrcUpdateInterval: i32,
+    pub AuthorityCode: String,
+    pub TrainLiveBoards: Vec<TrainLiveBoards>,
+    //Count: i64,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
+#[allow(non_snake_case)]
 pub struct TrainLiveBoards {
-    TrainNo: String,
-    TrainTypeID: String,
-    TrainTypeCode: String,
-    TrainTypeName: NameType,
-    StationID: String,
-    StationName: NameType,
-    TrainStationStatus: i32,
-    DelayTime: i32,
-    UpdateTime: String,
+    pub TrainNo: String,
+    pub TrainTypeID: String,
+    pub TrainTypeCode: String,
+    pub TrainTypeName: NameType,
+    pub StationID: String,
+    pub StationName: NameType,
+    pub TrainStationStatus: i32,
+    pub DelayTime: i32,
+    pub UpdateTime: String,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
+#[allow(non_snake_case)]
 pub struct NameType {
-    Zh_tw: String,
-    En: String,
+    pub Zh_tw: String,
+    pub En: String,
 }

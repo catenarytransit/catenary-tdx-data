@@ -6,6 +6,7 @@ use std::env;
 use std::env::consts::ARCH;
 use std::error::Error;
 use std::{collections::HashMap, fs::File, path::Path};
+use iso8601::*;
 
 static AUTH_URL: &str =
     "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token";
@@ -45,6 +46,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     let data_header = auth_response.split_once("\":\"").unwrap().1;
     let access_token = format!("Bearer {}", data_header.split_once("\",").unwrap().0);
 
+    #[allow(unused)] //
     let data_response = client
         .get(TEST_URL)
         .header(AUTHORIZATION, access_token.clone())
@@ -52,8 +54,6 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         .await?
         .text()
         .await?;
-
-    println!("{:?}", data_response);
 
     let data = client
         .get(TEST_URL)
@@ -63,5 +63,6 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         .json::<TRATrainLiveBoardList>()
         .await?;
 
+    print!("{}", datetime(&data.UpdateTime)?);
     Ok(())
 }
