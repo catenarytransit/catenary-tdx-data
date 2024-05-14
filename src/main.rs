@@ -3,7 +3,8 @@ use core::result::Result;
 //use iso8601::datetime;
 use reqwest::{header::AUTHORIZATION, header::CONTENT_TYPE, *};
 use serde_json::*;
-use std::{collections::HashMap, env, error::Error, fs::File, io::Write, path::Path};
+use std::{collections::HashMap, env, error::Error, fs::File, path::Path};
+//use std::io::Write;
 
 static AUTH_URL: &str =
     "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token";
@@ -11,7 +12,7 @@ static URL_HEAD: &str = "https://tdx.transportdata.tw/api/basic";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
-    let mut output = File::create("ilha_formosa.json")?;
+    //let mut output = File::create("ilha_formosa.json")?;
 
     let endpoint_links: Vec<String> = vec![
         //rt bus
@@ -139,6 +140,32 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     let data_header = auth_response.split_once("\":\"").unwrap().1;
     let access_token = format!("Bearer {}", data_header.split_once("\",").unwrap().0);
 
+    let endpoint = "/v2/Bus/RouteFare/City/Taipei";
+    let query_url = format!("{}{}", URL_HEAD, endpoint);
+    println!("{}", query_url);
+
+    let _raw = client
+        .get(&query_url)
+        .header(AUTHORIZATION, &access_token)
+        .send()
+        .await?
+        .json::<RouteFare>()
+        .await?;
+
+    if let Some(jdata) = client
+        .get(&query_url)
+        .header(AUTHORIZATION, &access_token)
+        .send()
+        .await?
+        .json::<RouteFare>()
+        .await
+        .ok()
+    {
+        print!("{:?}", jdata);
+        //write!(output, "{:?}", jdata).expect("file dne");
+    }
+
+    /*
     let list_item_counter: usize = 0;
     for mut endpoint in endpoint_links {
         if list_item_counter < city.len() {
@@ -171,6 +198,6 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         }
 
         write!(output, "{}", data).expect("file dne");
-    }
+    }*/
     Ok(())
 }
