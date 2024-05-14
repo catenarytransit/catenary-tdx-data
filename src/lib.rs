@@ -2,36 +2,56 @@ use serde::{Deserialize, Serialize};
 
 //just a lot of struct to deserialize (decerealize? un-cornflæke?) everything
 
+//top level structs, lists of items
 #[derive(Deserialize, Serialize, Debug)]
 #[allow(non_snake_case)]
-pub struct RealTimeByFrequency {
-    FrequencyList: Vec<RealTimeByFrequencyItem>
+pub struct BusRouteList {
+    RouteList: Vec<BusRouteItem>,
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+#[allow(non_snake_case)]
+pub struct RealTimeByFrequencyList {
+    FrequencyList: Vec<RealTimeByFrequencyItem>,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
 #[allow(non_snake_case)]
 pub struct TRATrainLiveBoardList {
-    pub UpdateTime: String, //"2024-05-12T05:18:17.454Z"
-    pub UpdateInterval: i32,
-    pub SrcUpdateTime: String,
-    pub SrcUpdateInterval: i32,
-    pub AuthorityCode: String,
-    pub TrainLiveBoards: Vec<TrainLiveBoards>,
-    //Count: i64,
+    UpdateTime: String, //"2024-05-12T05:18:17.454Z"
+    UpdateInterval: i32,
+    SrcUpdateTime: String,
+    SrcUpdateInterval: i32,
+    AuthorityCode: String,
+    TrainLiveBoards: Vec<TrainLiveBoardItem>,
 }
 
+//second level structs, items
 #[derive(Deserialize, Serialize, Debug)]
 #[allow(non_snake_case)]
-pub struct TrainLiveBoards {
-    TrainNo: String,
-    TrainTypeID: String,
-    TrainTypeCode: String,
-    TrainTypeName: NameType,
-    StationID: String,
-    StationName: NameType,
-    TrainStationStatus: i32,
-    DelayTime: i32,
-    pub UpdateTime: String,
+pub struct BusRouteItem {
+    RouteUID: String,
+    RouteID: String,
+    HasSubRoutes: bool,
+    Operators: Vec<RouteOperator>,
+    AuthorityID: String,
+    ProviderID: String,
+    SubRoutes: Vec<BusSubRoute>,
+    BusRouteType: i32,
+    RouteName: NameType,
+    DepartureStopNameZh: String,
+    DepartureStopNameEn: String,
+    DestinationStopNameZh: String,
+    DestinationStopNameEn: String,
+    TicketPriceDescriptionZh: String,
+    TicketPriceDescriptionEn: String,
+    FareBufferZoneDescriptionZh: String,
+    FareBufferZoneDescriptionEn: String,
+    RouteMapImageUrl: String,
+    City: String,
+    CityCode: String,
+    UpdateTime: String,
+    VersionID: i32,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -58,7 +78,38 @@ pub struct RealTimeByFrequencyItem {
     SrcRecTime: String,
     SrcTransTime: String,
     SrcUpdateTime: String,
-    pub UpdateTime: String,
+    UpdateTime: String,
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+#[allow(non_snake_case)]
+pub struct TrainLiveBoardItem {
+    TrainNo: String,
+    TrainTypeID: String,
+    TrainTypeCode: String,
+    TrainTypeName: NameType,
+    StationID: String,
+    StationName: NameType,
+    TrainStationStatus: i32,
+    DelayTime: i32,
+    UpdateTime: String,
+}
+
+//third level structs, stores other information
+#[derive(Deserialize, Serialize, Debug)]
+#[allow(non_snake_case)]
+pub struct BusSubRoute {
+    SubRouteUID: String,
+    SubRouteID: String,
+    OperatorIDs: Vec<String>,
+    SubRouteName: NameType,
+    Headsign: String,
+    HeadsignEn: String,
+    Direction: i32,
+    FirstBusTime: String,
+    LastBusTime: String,
+    HolidayFirstBusTime: String,
+    HolidayLastBusTime: String,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -71,7 +122,16 @@ pub struct NameType {
 #[derive(Deserialize, Serialize, Debug)]
 #[allow(non_snake_case)]
 pub struct PointType {
-    pub PositionLon: f64,
-    pub PositionLat: f64,
-    pub GeoHash: String,
+    PositionLon: f64,
+    PositionLat: f64,
+    GeoHash: String,
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+#[allow(non_snake_case)]
+pub struct RouteOperator {
+    OperatorID: String,
+    OperatorName: NameType,
+    OperatorCode: String,
+    OperatorNo: String,
 }
