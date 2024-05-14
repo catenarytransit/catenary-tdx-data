@@ -2,9 +2,7 @@ use serde::{Deserialize, Serialize};
 
 //just a lot of struct to deserialize (decerealize? un-cornflæke?) everything
 /*
-done list: TrainLiveBoard, Routes (bus),
-Operator, Schedule (bus), FirstLastTripInfo (bus), Shape (bus),
-RouteFare (bus), Stop (bus)
+done list: TrainLiveBoard, all static data (hopefully)
 
 */
 
@@ -54,7 +52,7 @@ pub struct BusRoute {
     #[serde(rename = "RouteID")]
     route_id: String,
     has_sub_routes: bool,
-    operators: Vec<Operator>,
+    operators: Vec<RouteOperator>,
     #[serde(rename = "AuthorityID")]
     authority_id: String,
     #[serde(rename = "ProviderID")]
@@ -80,7 +78,7 @@ pub struct BusRoute {
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct Operator {
+pub struct RouteOperator {
     #[serde(rename = "OperatorID")]
     operator_id: String,
     operator_name: NameType,
@@ -106,11 +104,11 @@ pub struct SubRoute {
     holiday_last_bus_time: String,
 }
 
-pub type Stop = Vec<StopElement>;
+pub type BusStops = Vec<BusStop>;
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct StopElement {
+pub struct BusStop {
     #[serde(rename = "StopUID")]
     stop_uid: String,
     #[serde(rename = "StopID")]
@@ -150,11 +148,11 @@ pub struct StopPosition {
     geo_hash: String,
 }
 
-pub type Operator = Vec<OperatorElement>;
+pub type Operators = Vec<Operator>;
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct OperatorElement {
+pub struct Operator {
     #[serde(rename = "ProviderID")]
     provider_id: String,
     #[serde(rename = "OperatorID")]
@@ -180,11 +178,11 @@ pub struct OperatorName {
     en: String,
 }
 
-pub type Schedule = Vec<ScheduleElement>;
+pub type BusSchedules = Vec<BusSchedule>;
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct ScheduleElement {
+pub struct BusSchedule {
     #[serde(rename = "RouteUID")]
     route_uid: String,
     #[serde(rename = "RouteID")]
@@ -309,14 +307,14 @@ pub struct FirstLastTripInfoElement {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct FirstLastTrip {
-    service_day: ServiceDay,
+    service_day: BusServiceDay,
     first_trip_dep_time: String,
     last_trip_dep_time: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct ServiceDay {
+pub struct BusServiceDay {
     day_before_national_holiday: i64,
     day_after_national_holiday: i64,
     typhoon_day: i64,
@@ -339,11 +337,11 @@ pub struct RouteName {
     en: String,
 }
 
-pub type Shape = Vec<ShapeElement>;
+pub type Shapes = Vec<Shape>;
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct ShapeElement {
+pub struct Shape {
     #[serde(rename = "RouteUID")]
     route_uid: String,
     #[serde(rename = "RouteID")]
@@ -362,19 +360,11 @@ pub struct ShapeElement {
     version_id: i64,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "PascalCase")]
-pub struct RouteName {
-    #[serde(rename = "Zh_tw")]
-    zh_tw: String,
-    en: String,
-}
-
-pub type RouteFare = Vec<RouteFareElement>;
+pub type RouteFares = Vec<RouteFare>;
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct RouteFareElement {
+pub struct RouteFare {
     #[serde(rename = "RouteID")]
     route_id: String,
     route_name: String,
@@ -478,4 +468,567 @@ pub struct ServiceDay {
     friday: i64,
     saturday: i64,
     national_holidays: i64,
+}
+
+pub type RailStations = Vec<RailStation>;
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct RailStation {
+    #[serde(rename = "StationUID")]
+    station_uid: String,
+    #[serde(rename = "StationID")]
+    station_id: String,
+    station_code: Option<String>,
+    station_name: StationName,
+    station_address: String,
+    bike_allow_on_holiday: bool,
+    src_update_time: String,
+    update_time: String,
+    #[serde(rename = "VersionID")]
+    version_id: i64,
+    station_position: StationPosition,
+    location_city: String,
+    location_city_code: String,
+    location_town: String,
+    location_town_code: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct StationPosition {
+    position_lon: i64,
+    position_lat: i64,
+    geo_hash: String,
+}
+
+
+pub type RailRoutes = Vec<RailRoute>;
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct RailRoute {
+    #[serde(rename = "RouteID")]
+    route_id: String,
+    operator_code: String,
+    route_name: Name,
+    rail_route_type: i64,
+    line_no: String,
+    #[serde(rename = "LineID")]
+    line_id: String,
+    direction: i64,
+    #[serde(rename = "StartStationID")]
+    start_station_id: String,
+    start_station_name: Name,
+    #[serde(rename = "EndStationID")]
+    end_station_id: String,
+    end_station_name: Name,
+    travel_time: i64,
+    route_length: i64,
+    src_update_time: String,
+    update_time: String,
+    #[serde(rename = "VersionID")]
+    version_id: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct Name {
+    #[serde(rename = "Zh_tw")]
+    zh_tw: String,
+    en: String,
+}
+
+pub type FirstLastTimetables = Vec<FirstLastTimetable>;
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct FirstLastTimetable {
+    line_no: String,
+    #[serde(rename = "LineID")]
+    line_id: String,
+    #[serde(rename = "StationID")]
+    station_id: String,
+    station_name: StationName,
+    trip_head_sign: String,
+    #[serde(rename = "DestinationStaionID")]
+    destination_staion_id: String,
+    destination_station_name: StationName,
+    train_type: i64,
+    first_train_time: String,
+    last_train_time: String,
+    service_day: MetroServiceDay,
+    src_update_time: String,
+    update_time: String,
+    #[serde(rename = "VersionID")]
+    version_id: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct StationName {
+    #[serde(rename = "Zh_tw")]
+    zh_tw: String,
+    en: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct MetroServiceDay {
+    service_tag: String,
+    monday: bool,
+    tuesday: bool,
+    wednesday: bool,
+    thursday: bool,
+    friday: bool,
+    saturday: bool,
+    sunday: bool,
+    national_holidays: bool,
+}
+
+
+pub type RailFrequencies = Vec<RailFrequency>;
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct RailFrequency {
+    line_no: String,
+    #[serde(rename = "LineID")]
+    line_id: String,
+    #[serde(rename = "RouteID")]
+    route_id: String,
+    train_type: i64,
+    service_day: ServiceDay,
+    operation_time: OperationTime,
+    headways: Vec<Headway>,
+    src_update_time: String,
+    update_time: String,
+    #[serde(rename = "VersionID")]
+    version_id: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct Headway {
+    peak_flag: String,
+    start_time: String,
+    end_time: String,
+    min_headway_mins: i64,
+    max_headway_mins: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct OperationTime {
+    start_time: String,
+    end_time: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct ServiceDay {
+    service_tag: String,
+    monday: bool,
+    tuesday: bool,
+    wednesday: bool,
+    thursday: bool,
+    friday: bool,
+    saturday: bool,
+    sunday: bool,
+    national_holidays: bool,
+}
+
+pub type RailShapes = Vec<RailShape>;
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct RailShape {
+    line_no: Option<String>,
+    #[serde(rename = "LineID")]
+    line_id: String,
+    line_name: LineName,
+    update_time: String,
+    geometry: String,
+    encoded_polyline: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct LineName {
+    #[serde(rename = "Zh_tw")]
+    zh_tw: String,
+    en: String,
+}
+
+pub type MetroFares = Vec<MetroFare>;
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct MetroFare {
+    #[serde(rename = "OriginStationID")]
+    origin_station_id: String,
+    origin_station_name: NStationName,
+    #[serde(rename = "DestinationStationID")]
+    destination_station_id: String,
+    destination_station_name: NStationName,
+    train_type: i64,
+    fares: Vec<MetFare>,
+    travel_time: i64,
+    travel_distance: i64,
+    src_update_time: String,
+    update_time: String,
+    #[serde(rename = "VersionID")]
+    version_id: i64,
+}
+
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct MetFare {
+    ticket_type: i64,
+    fare_class: i64,
+    sale_type: String,
+    citizen_code: String,
+    price: i64,
+}
+
+pub type ThsrGeneralTimetables = Vec<ThsrGeneralTimetable>;
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct ThsrGeneralTimetable {
+    update_time: String,
+    effective_date: String,
+    expiring_date: String,
+    #[serde(rename = "VersionID")]
+    version_id: i64,
+    general_timetable: GeneralTimetable,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct GeneralTimetable {
+    general_train_info: GeneralTrainInfo,
+    stop_times: Vec<StopTime>,
+    service_day: ThsrServiceDay,
+    src_update_time: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct GeneralTrainInfo {
+    train_no: String,
+    direction: i64,
+    #[serde(rename = "StartingStationID")]
+    starting_station_id: String,
+    starting_station_name: EndingStationName,
+    #[serde(rename = "EndingStationID")]
+    ending_station_id: String,
+    ending_station_name: EndingStationName,
+    note: EndingStationName,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct EndingStationName {
+    #[serde(rename = "Zh_tw")]
+    zh_tw: String,
+    en: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct ThsrServiceDay {
+    monday: i64,
+    tuesday: i64,
+    wednesday: i64,
+    thursday: i64,
+    friday: i64,
+    saturday: i64,
+    sunday: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct StopTime {
+    stop_sequence: i64,
+    #[serde(rename = "StationID")]
+    station_id: String,
+    station_name: EndingStationName,
+    arrival_time: String,
+    departure_time: String,
+}
+
+pub type ThsrFares = Vec<ThsrFare>;
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct ThsrFare {
+    #[serde(rename = "OriginStationID")]
+    origin_station_id: String,
+    origin_station_name: NStationName,
+    #[serde(rename = "DestinationStationID")]
+    destination_station_id: String,
+    destination_station_name: NStationName,
+    direction: i64,
+    fares: Vec<Fare>,
+    src_update_time: String,
+    update_time: String,
+    #[serde(rename = "VersionID")]
+    version_id: i64,
+}
+
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct Fare {
+    ticket_type: i64,
+    fare_class: i64,
+    cabin_class: i64,
+    price: f64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct V3Operators {
+    update_time: String,
+    update_interval: i64,
+    src_update_time: String,
+    src_update_interval: i64,
+    authority_code: String,
+    operators: Vec<V3Operator>,
+    count: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct V3Operator {
+    operator_code: String,
+    operator_name: OperatorName,
+    operator_phone: String,
+    operator_email: String,
+    #[serde(rename = "OperatorURL")]
+    operator_url: String,
+    #[serde(rename = "FareURL")]
+    fare_url: String,
+    #[serde(rename = "ReservationURL")]
+    reservation_url: String,
+    reservation_phone: String,
+    #[serde(rename = "OperatorLogoURL")]
+    operator_logo_url: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct V3TraStations {
+    update_time: String,
+    update_interval: i64,
+    src_update_time: String,
+    src_update_interval: i64,
+    authority_code: String,
+    stations: Vec<V3TraStation>,
+    count: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct V3TraStation {
+    #[serde(rename = "StationUID")]
+    station_uid: String,
+    #[serde(rename = "StationID")]
+    station_id: String,
+    reservation_code: String,
+    station_name: StationName,
+    station_position: StationPosition,
+    station_address: String,
+    station_phone: String,
+    station_class: String,
+    #[serde(rename = "StationURL")]
+    station_url: String,
+}
+
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct StationPosition {
+    position_lon: f64,
+    position_lat: f64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct V3GeneralTrainTimetables {
+    update_time: String,
+    update_interval: i64,
+    src_update_time: String,
+    src_update_interval: i64,
+    authority_code: String,
+    effective_date: String,
+    expire_date: String,
+    src_version: String,
+    timetable_name: String,
+    validity_desciption: String,
+    train_timetables: Vec<V3TrainTimetable>,
+    count: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct V3TrainTimetable {
+    train_info: V3TrainInfo,
+    stop_times: Vec<V3StopTime>,
+    service_day: V3ServiceDay,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct V3ServiceDay {
+    service_tag: String,
+    monday: i64,
+    tuesday: i64,
+    wednesday: i64,
+    thursday: i64,
+    friday: i64,
+    saturday: i64,
+    sunday: i64,
+    national_holidays: i64,
+    day_before_holiday: i64,
+    day_after_holiday: i64,
+    typhoon_day: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct V3StopTime {
+    stop_sequence: i64,
+    #[serde(rename = "StationID")]
+    station_id: String,
+    station_name: Name,
+    arrival_time: String,
+    departure_time: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct V3TrainInfo {
+    train_no: String,
+    #[serde(rename = "RouteID")]
+    route_id: String,
+    direction: i64,
+    #[serde(rename = "TrainTypeID")]
+    train_type_id: String,
+    train_type_code: String,
+    train_type_name: Name,
+    trip_head_sign: String,
+    #[serde(rename = "StartingStationID")]
+    starting_station_id: String,
+    starting_station_name: Name,
+    #[serde(rename = "EndingStationID")]
+    ending_station_id: String,
+    ending_station_name: Name,
+    #[serde(rename = "OverNightStationID")]
+    over_night_station_id: String,
+    trip_line: i64,
+    wheel_chair_flag: i64,
+    package_service_flag: i64,
+    dining_flag: i64,
+    breast_feed_flag: i64,
+    bike_flag: i64,
+    car_flag: i64,
+    daily_flag: i64,
+    extra_train_flag: i64,
+    note: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct V3Shapes {
+    update_time: String,
+    update_interval: i64,
+    src_update_time: String,
+    src_update_interval: i64,
+    authority_code: String,
+    shapes: Vec<V3Shape>,
+    count: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct V3Shape {
+    line_no: String,
+    #[serde(rename = "LineID")]
+    line_id: String,
+    line_name: LineName,
+    geometry: String,
+    update_time: String,
+}
+
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct V3OdFares {
+    update_time: String,
+    update_interval: i64,
+    src_update_time: String,
+    src_update_interval: i64,
+    authority_code: String,
+    effective_date: String,
+    expire_date: String,
+    src_version: String,
+    #[serde(rename = "ODFares")]
+    od_fares: Vec<V3OdFare>,
+    count: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct V3OdFare {
+    #[serde(rename = "OriginStationID")]
+    origin_station_id: String,
+    origin_station_name: NStationName,
+    #[serde(rename = "DestinationStationID")]
+    destination_station_id: String,
+    destination_station_name: NStationName,
+    direction: i64,
+    train_type: i64,
+    fares: Vec<Fare>,
+    travel_distance: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct NStationName {
+    #[serde(rename = "Zh_tw")]
+    zh_tw: String,
+    en: String,
+}
+
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct V3AfrStations {
+    update_time: String,
+    update_interval: i64,
+    src_update_time: String,
+    src_update_interval: i64,
+    authority_code: String,
+    stations: Vec<V3AfrStation>,
+    count: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct V3AfrStation {
+    station_class: String,
+    #[serde(rename = "StationUID")]
+    station_uid: String,
+    #[serde(rename = "StationID")]
+    station_id: String,
+    reservation_code: String,
+    station_name: StationName,
+    station_position: StationPosition,
+    station_address: String,
+    station_phone: String,
+    #[serde(rename = "StationURL")]
+    station_url: String,
 }
