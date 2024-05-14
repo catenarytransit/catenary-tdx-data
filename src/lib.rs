@@ -1,128 +1,104 @@
 use serde::{Deserialize, Serialize};
 
 //just a lot of struct to deserialize (decerealize? un-cornflæke?) everything
+/*
+done list: TrainLiveBoard, Routes (bus)
+*/
 
-//top level structs, lists of items
-pub type BusRouteList = Vec<BusRouteItem>;
-pub type RealTimeByFrequency = Vec<RealTimeByFrequencyItem>;
-
-#[derive(Deserialize, Serialize, Debug)]
-#[allow(non_snake_case)]
-pub struct TRATrainLiveBoardList {
-    UpdateTime: String, //"2024-05-12T05:18:17.454Z"
-    UpdateInterval: i32,
-    SrcUpdateTime: String,
-    SrcUpdateInterval: i32,
-    AuthorityCode: String,
-    TrainLiveBoards: Vec<TrainLiveBoardItem>,
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct TrainLiveBoard {
+    update_time: String,
+    update_interval: i64,
+    src_update_time: String,
+    src_update_interval: i64,
+    authority_code: String,
+    train_live_boards: Vec<TrainLiveBoardElement>,
+    count: i64,
 }
 
-//second level structs, items
-#[derive(Deserialize, Serialize, Debug)]
-#[allow(non_snake_case)]
-pub struct BusRouteItem {
-    RouteUID: String,
-    RouteID: String,
-    HasSubRoutes: bool,
-    Operators: Vec<RouteOperator>,
-    AuthorityID: String,
-    ProviderID: String,
-    SubRoutes: Vec<BusSubRoute>,
-    BusRouteType: i32,
-    RouteName: NameType,
-    DepartureStopNameZh: String,
-    DepartureStopNameEn: String,
-    DestinationStopNameZh: String,
-    DestinationStopNameEn: String,
-    TicketPriceDescriptionZh: String,
-    TicketPriceDescriptionEn: String,
-    FareBufferZoneDescriptionZh: String,
-    FareBufferZoneDescriptionEn: String,
-    RouteMapImageUrl: String,
-    City: String,
-    CityCode: String,
-    UpdateTime: String,
-    VersionID: i32,
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct TrainLiveBoardElement {
+    train_no: String,
+    #[serde(rename = "TrainTypeID")]
+    train_type_id: String,
+    train_type_code: String,
+    train_type_name: NameType,
+    #[serde(rename = "StationID")]
+    station_id: String,
+    station_name: NameType,
+    train_station_status: i64,
+    delay_time: i64,
+    update_time: String,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
-#[allow(non_snake_case)]
-pub struct RealTimeByFrequencyItem {
-    PlateNumb: String,
-    OperatorID: String,
-    OperatorNo: String,
-    RouteUID: String,
-    RouteID: String,
-    RouteName: NameType,
-    SubRouteUID: String,
-    SubRouteID: String,
-    SubRouteName: NameType,
-    Direction: i32,
-    BusPosition: PointType,
-    Speed: f64,
-    Azimuth: f64,
-    DutyStatus: i32,
-    BusStatus: i32,
-    MessageType: i32,
-    GPSTime: String,
-    TransTime: String,
-    SrcRecTime: String,
-    SrcTransTime: String,
-    SrcUpdateTime: String,
-    UpdateTime: String,
-}
-
-#[derive(Deserialize, Serialize, Debug)]
-#[allow(non_snake_case)]
-pub struct TrainLiveBoardItem {
-    TrainNo: String,
-    TrainTypeID: String,
-    TrainTypeCode: String,
-    TrainTypeName: NameType,
-    StationID: String,
-    StationName: NameType,
-    TrainStationStatus: i32,
-    DelayTime: i32,
-    UpdateTime: String,
-}
-
-//third level structs, stores other information
-#[derive(Deserialize, Serialize, Debug)]
-#[allow(non_snake_case)]
-pub struct BusSubRoute {
-    SubRouteUID: String,
-    SubRouteID: String,
-    OperatorIDs: Vec<String>,
-    SubRouteName: NameType,
-    Headsign: String,
-    HeadsignEn: String,
-    Direction: i32,
-    FirstBusTime: String,
-    LastBusTime: String,
-    HolidayFirstBusTime: String,
-    HolidayLastBusTime: String,
-}
-
-#[derive(Deserialize, Serialize, Debug)]
-#[allow(non_snake_case)]
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
 pub struct NameType {
-    Zh_tw: String,
-    En: String,
+    #[serde(rename = "Zh_tw")]
+    zh_tw: String,
+    en: String,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
-#[allow(non_snake_case)]
-pub struct PointType {
-    PositionLon: f64,
-    PositionLat: f64,
-    GeoHash: String,
+pub type BusRoutes = Vec<BusRoute>;
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct BusRoute {
+    #[serde(rename = "RouteUID")]
+    route_uid: String,
+    #[serde(rename = "RouteID")]
+    route_id: String,
+    has_sub_routes: bool,
+    operators: Vec<Operator>,
+    #[serde(rename = "AuthorityID")]
+    authority_id: String,
+    #[serde(rename = "ProviderID")]
+    provider_id: String,
+    sub_routes: Vec<SubRoute>,
+    bus_route_type: i64,
+    route_name: NameType,
+    departure_stop_name_zh: String,
+    departure_stop_name_en: String,
+    destination_stop_name_zh: String,
+    destination_stop_name_en: String,
+    ticket_price_description_zh: String,
+    ticket_price_description_en: String,
+    fare_buffer_zone_description_zh: String,
+    fare_buffer_zone_description_en: String,
+    route_map_image_url: String,
+    city: String,
+    city_code: String,
+    update_time: String,
+    #[serde(rename = "VersionID")]
+    version_id: i64,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
-#[allow(non_snake_case)]
-pub struct RouteOperator {
-    OperatorID: String,
-    OperatorName: NameType,
-    OperatorCode: String,
-    OperatorNo: String,
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct Operator {
+    #[serde(rename = "OperatorID")]
+    operator_id: String,
+    operator_name: NameType,
+    operator_code: String,
+    operator_no: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct SubRoute {
+    #[serde(rename = "SubRouteUID")]
+    sub_route_uid: String,
+    #[serde(rename = "SubRouteID")]
+    sub_route_id: String,
+    operator_i_ds: Vec<String>,
+    sub_route_name: NameType,
+    headsign: String,
+    headsign_en: String,
+    direction: i64,
+    first_bus_time: String,
+    last_bus_time: String,
+    holiday_first_bus_time: String,
+    holiday_last_bus_time: String,
 }

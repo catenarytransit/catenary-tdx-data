@@ -164,7 +164,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
             .header(AUTHORIZATION, &access_token)
             .send()
             .await?
-            .json::<TRATrainLiveBoardList>()
+            .json::<TrainLiveBoard>()
             .await
             .ok()
         {
