@@ -42,7 +42,6 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         "/v3/Rail/TRA/TrainLiveBoard".to_string(),
         "/v3/Rail/TRA/StationLiveBoard".to_string(),
         "/v3/Rail/TRA/Alert".to_string(),
-        "/v2/Rail/TRA/LiveTrainDelay".to_string(),
         "/v2/Rail/Metro/LiveBoard/railsystem".to_string(),
         "/v2/Rail/Metro/StationTimeTable/railsystem".to_string(),
         "/v2/Rail/Metro/Alert/railsystem".to_string(),
