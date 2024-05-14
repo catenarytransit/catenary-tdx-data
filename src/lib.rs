@@ -3,17 +3,8 @@ use serde::{Deserialize, Serialize};
 //just a lot of struct to deserialize (decerealize? un-cornflæke?) everything
 
 //top level structs, lists of items
-#[derive(Deserialize, Serialize, Debug)]
-#[allow(non_snake_case)]
-pub struct BusRouteList {
-    RouteList: Vec<BusRouteItem>,
-}
-
-#[derive(Deserialize, Serialize, Debug)]
-#[allow(non_snake_case)]
-pub struct RealTimeByFrequencyList {
-    FrequencyList: Vec<RealTimeByFrequencyItem>,
-}
+pub type BusRouteList = Vec<BusRouteItem>;
+pub type RealTimeByFrequency = Vec<RealTimeByFrequencyItem>;
 
 #[derive(Deserialize, Serialize, Debug)]
 #[allow(non_snake_case)]

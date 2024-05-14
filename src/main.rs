@@ -168,7 +168,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
             .await
             .ok()
         {
-            print!("{}", datetime(&data.UpdateTime)?);
+            print!("{:?}", data);
         }
 
         write!(output, "{}", data).expect("file dne");
