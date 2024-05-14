@@ -1,12 +1,11 @@
-use catenary_tdx_data::TRATrainLiveBoardList;
+use catenary_tdx_data::*;
 use core::result::Result;
+use iso8601::datetime;
 use reqwest::{header::AUTHORIZATION, header::CONTENT_TYPE, *};
 use serde_json::*;
-use std::env;
-use std::env::consts::ARCH;
+use std::env::{consts::ARCH, var};
 use std::error::Error;
 use std::{collections::HashMap, fs::File, path::Path};
-use iso8601::*;
 
 static AUTH_URL: &str =
     "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token";
@@ -17,7 +16,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     let raw_path = match ARCH {
         "x86_64" => format!(
             "C:\\Users\\{}\\Downloads\\tdx-secret.json",
-            env::var("USERNAME")?
+            var("USERNAME")?
         ),
 
         &_ => todo!(),
@@ -46,23 +45,16 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     let data_header = auth_response.split_once("\":\"").unwrap().1;
     let access_token = format!("Bearer {}", data_header.split_once("\",").unwrap().0);
 
-    #[allow(unused)] //
-    let data_response = client
-        .get(TEST_URL)
-        .header(AUTHORIZATION, access_token.clone())
-        .send()
-        .await?
-        .text()
-        .await?;
-
-    let data = client
+    if let Some(data) = client
         .get(TEST_URL)
         .header(AUTHORIZATION, access_token)
         .send()
         .await?
         .json::<TRATrainLiveBoardList>()
-        .await?;
-
-    print!("{}", datetime(&data.UpdateTime)?);
+        .await
+        .ok()
+    {
+        print!("{}", datetime(&data.UpdateTime)?);
+    }
     Ok(())
 }
