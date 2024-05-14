@@ -3,9 +3,7 @@ use core::result::Result;
 use iso8601::datetime;
 use reqwest::{header::AUTHORIZATION, header::CONTENT_TYPE, *};
 use serde_json::*;
-use std::env::{consts::ARCH, var};
-use std::error::Error;
-use std::{collections::HashMap, fs::File, path::Path};
+use std::{collections::HashMap, env, error::Error, fs::File, io::Write, path::Path};
 
 static AUTH_URL: &str =
     "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token";
@@ -13,6 +11,8 @@ static URL_HEAD: &str = "https://tdx.transportdata.tw/api/basic";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
+    let mut output = File::create("ilha_formosa.json")?;
+
     let endpoint_links: Vec<String> = vec![
         //rt bus
         "/v2/Bus/RealTimeByFrequency/City/city".to_string(),
@@ -94,7 +94,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         "TaitungCounty".to_string(),
         "KinmenCounty".to_string(),
         "PenghuCounty".to_string(),
-        "LienchiangCounty".to_string()
+        "LienchiangCounty".to_string(),
     ];
 
     let railsystem = vec![
@@ -105,13 +105,13 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         "TRTCMG".to_string(), //gondola :D
         "TMRT".to_string(),
         "NTMC".to_string(),
-        "NTALRT".to_string()
+        "NTALRT".to_string(),
     ];
 
-    let raw_path = match ARCH {
+    let raw_path = match env::consts::ARCH {
         "x86_64" => format!(
             "C:\\Users\\{}\\Downloads\\tdx-secret.json",
-            var("USERNAME")?
+            env::var("USERNAME")?
         ),
 
         &_ => todo!(),
@@ -142,15 +142,22 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
 
     let list_item_counter: usize = 0;
     for mut endpoint in endpoint_links {
-        if list_item_counter < city.len(){
+        if list_item_counter < city.len() {
             endpoint = endpoint.replace("city", &city[list_item_counter]);
         }
         if list_item_counter < railsystem.len() {
             endpoint = endpoint.replace("railsystem", &railsystem[list_item_counter]);
         }
-        let query_url = format!("{}{}",URL_HEAD, endpoint);
-        let data = client.get(&query_url).header(AUTHORIZATION, &access_token).send().await?.text().await?;
-        print!("{:?}", data);
+        let query_url = format!("{}{}", URL_HEAD, endpoint);
+
+        let data = client
+            .get(&query_url)
+            .header(AUTHORIZATION, &access_token)
+            .send()
+            .await?
+            .text()
+            .await?;
+        print!("{:?}", data); //checks if the data is even there
 
         if let Some(data) = client
             .get(&query_url)
@@ -163,6 +170,8 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         {
             print!("{}", datetime(&data.UpdateTime)?);
         }
+
+        write!(output, "{}", data).expect("file dne");
     }
     Ok(())
 }
