@@ -140,7 +140,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     let data_header = auth_response.split_once("\":\"").unwrap().1;
     let access_token = format!("Bearer {}", data_header.split_once("\",").unwrap().0);
 
-    let endpoint = "/v2/Bus/RouteFare/City/Taipei";
+    let endpoint = "/v2/Rail/THSR/GeneralTimetable"; //"/v2/Bus/RouteFare/City/Taipei";
     let query_url = format!("{}{}", URL_HEAD, endpoint);
     println!("{}", query_url);
 
@@ -149,7 +149,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         .header(AUTHORIZATION, &access_token)
         .send()
         .await?
-        .json::<RouteFare>()
+        .json::<ThsrGeneralTimetables>()
         .await?;
 
     if let Some(jdata) = client
@@ -157,7 +157,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         .header(AUTHORIZATION, &access_token)
         .send()
         .await?
-        .json::<RouteFare>()
+        .json::<ThsrGeneralTimetables>()
         .await
         .ok()
     {
