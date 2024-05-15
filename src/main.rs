@@ -14,7 +14,7 @@ static URL_HEAD: &str = "https://tdx.transportdata.tw/api/basic";
 async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     //let mut output = File::create("ilha_formosa.json")?;
 
-    let endpoint_links: Vec<String> = vec![
+    let endpoint_links: HashMap<String, > = vec![
         //rt bus
         "/v2/Bus/RealTimeByFrequency/City/city".to_string(),
         "/v2/Bus/RealTimeNearStop/City/city".to_string(),

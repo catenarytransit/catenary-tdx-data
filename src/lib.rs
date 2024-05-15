@@ -2,10 +2,140 @@ use serde::{Deserialize, Serialize};
 
 //just a lot of struct to deserialize (decerealize? un-cornflæke?) everything
 pub type BusRoutes = Vec<BusRoute>; //top level
+pub type BusStops = Vec<BusStop>; //top level
+pub type BusOperators = Vec<BusOperator>; //top level
+pub type BusSchedules = Vec<BusSchedule>; //top level
+pub type FirstLastTripInfo = Vec<FirstLastTripInfoElement>; //top level
+pub type BusShapes = Vec<Shape>; //top level
+pub type BusRouteFare = Vec<BusRouteFareElement>; //top level
+pub type RailStations = Vec<RailStation>; //top level
+pub type RailRoutes = Vec<RailRoute>; //top level
+pub type FirstLastTimetables = Vec<FirstLastTimetable>; //top level
+pub type RailFrequencies = Vec<RailFrequency>; //top level
+pub type RailShapes = Vec<RailShape>; //top level
+pub type MetroFares = Vec<MetroFare>; //top level
+pub type ThsrGeneralTimetables = Vec<ThsrGeneralTimetable>; //top level
+pub type ThsrFares = Vec<RailFare>; //top level
+pub type BusRtFrequency = Vec<BusRtFrequencyElement>; //top level
+pub type BusRtStops = Vec<BusRtStop>; //top level
+pub type BusEta = Vec<BusEtaElement>; //top level
+pub type BusAlerts = Vec<BusAlert>; //top level
+pub type MetroLiveBoard = Vec<MetroLiveBoardElement>; //top level
+pub type MetroStationTimeTable = Vec<MetroStationTimeTableElement>; //top level
+pub type ThsrAlertInfo = Vec<ThsrAlertInfoElement>; //top level
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct BusRoute { //top level
+pub struct V3RailOperators { //top level
+    update_time: String,
+    update_interval: i64,
+    src_update_time: String,
+    src_update_interval: i64,
+    authority_code: String,
+    operators: Vec<V3RailOperator>,
+    count: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct V3RailStations {  //top level //also works for AFR stations
+    update_time: String,
+    update_interval: i64,
+    src_update_time: String,
+    src_update_interval: i64,
+    authority_code: String,
+    stations: Vec<V3RailStation>,
+    count: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct V3GeneralTrainTimetables { //top level
+    update_time: String,
+    update_interval: i64,
+    src_update_time: String,
+    src_update_interval: i64,
+    authority_code: String,
+    effective_date: String,
+    expire_date: String,
+    src_version: String,
+    timetable_name: String,
+    validity_desciption: String,
+    train_timetables: Vec<V3TrainTimetable>,
+    count: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct V3RailShapes { //top level
+    update_time: String,
+    update_interval: i64,
+    src_update_time: String,
+    src_update_interval: i64,
+    authority_code: String,
+    shapes: Vec<V3RailShape>,
+    count: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct V3OdFares {    //top level
+    update_time: String,
+    update_interval: i64,
+    src_update_time: String,
+    src_update_interval: i64,
+    authority_code: String,
+    effective_date: String,
+    expire_date: String,
+    src_version: String,
+    #[serde(rename = "ODFares")]
+    od_fares: Vec<RailFare>,
+    count: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct TrainLiveBoard {    //top level
+    update_time: String,
+    update_interval: i64,
+    src_update_time: String,
+    src_update_interval: i64,
+    authority_code: String,
+    train_live_boards: Vec<TrainLiveBoardElement>,
+    count: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct StationLiveBoard {    //top level
+    update_time: String,
+    update_interval: i64,
+    src_update_time: String,
+    src_update_interval: i64,
+    authority_code: String,
+    station_live_boards: Vec<StationLiveBoardElement>,
+    count: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct RailAlerts {    //top level  //Metro alert and TRA alerts
+    update_time: String,
+    update_interval: i64,
+    src_update_time: String,
+    src_update_interval: i64,
+    authority_code: String,
+    alerts: Vec<RailAlert>,
+    count: i64,
+}
+
+
+//sublevel structs
+
+//BusRoutes
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct BusRoute {
     #[serde(rename = "RouteUID")]
     route_uid: String,
     #[serde(rename = "RouteID")]
@@ -63,8 +193,7 @@ pub struct SubRoute {
     holiday_last_bus_time: String,
 }
 
-pub type BusStops = Vec<BusStop>; //top level
-
+//BusStops
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct BusStop {
@@ -99,11 +228,10 @@ pub struct Position {
     geo_hash: Option<String>,
 }
 
-pub type Operators = Vec<Operator>; //top level
-
+//BusOperators
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct Operator {
+pub struct BusOperator {
     #[serde(rename = "ProviderID")]
     provider_id: String,
     #[serde(rename = "OperatorID")]
@@ -121,8 +249,7 @@ pub struct Operator {
     update_time: String,
 }
 
-pub type BusSchedules = Vec<BusSchedule>; //top level
-
+//BusSchedules
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct BusSchedule {
@@ -224,8 +351,7 @@ pub struct BusStopTime {
     departure_time: String,
 }
 
-pub type FirstLastTripInfo = Vec<FirstLastTripInfoElement>; //top level
-
+//FirstLastTripInfo
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct FirstLastTripInfoElement {
@@ -257,8 +383,7 @@ pub struct FirstLastTrip {
     last_trip_dep_time: String,
 }
 
-pub type Shapes = Vec<Shape>; //top level
-
+//BusShapes
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct Shape {
@@ -280,8 +405,7 @@ pub struct Shape {
     version_id: i64,
 }
 
-pub type BusRouteFare = Vec<BusRouteFareElement>; //top level
-
+//BusRouteFare
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct BusRouteFareElement {
@@ -369,8 +493,7 @@ pub struct DiscountPeriod {
     end_time: String,
 }
 
-pub type RailStations = Vec<RailStation>; //top level
-
+//RailStation
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct RailStation {
@@ -393,8 +516,7 @@ pub struct RailStation {
     location_town_code: String,
 }
 
-pub type RailRoutes = Vec<RailRoute>; //top level
-
+//RailRoutes
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct RailRoute {
@@ -421,8 +543,7 @@ pub struct RailRoute {
     version_id: i64,
 }
 
-pub type FirstLastTimetables = Vec<FirstLastTimetable>; //top level
-
+//FirstLastTimetable
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct FirstLastTimetable {
@@ -446,8 +567,7 @@ pub struct FirstLastTimetable {
     version_id: i64,
 }
 
-pub type RailFrequencies = Vec<RailFrequency>; //top level
-
+//RailFrequencies
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct RailFrequency {
@@ -483,8 +603,7 @@ pub struct OperationTime {
     end_time: String,
 }
 
-pub type RailShapes = Vec<RailShape>; //top level
-
+//RailShapes
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct RailShape {
@@ -497,8 +616,7 @@ pub struct RailShape {
     encoded_polyline: Option<String>,
 }
 
-pub type MetroFares = Vec<MetroFare>; //top level
-
+//MetroFares
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct MetroFare {
@@ -528,8 +646,7 @@ pub struct MetFare {
     price: i64,
 }
 
-pub type ThsrGeneralTimetables = Vec<ThsrGeneralTimetable>; //top level
-
+//THSRGeneralTimetable
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct ThsrGeneralTimetable {
@@ -575,8 +692,7 @@ pub struct StopTime {
     departure_time: Option<String>,
 }
 
-pub type ThsrFares = Vec<RailFare>; //top level
-
+//THSRFare
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct RailFare {
@@ -596,22 +712,10 @@ pub struct RailFare {
     version_id: Option<i64>,
 }
 
+//V3RailOperators
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct V3Operators {
-    //top level
-    update_time: String,
-    update_interval: i64,
-    src_update_time: String,
-    src_update_interval: i64,
-    authority_code: String,
-    operators: Vec<V3Operator>,
-    count: i64,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "PascalCase")]
-pub struct V3Operator {
+pub struct V3RailOperator {
     operator_code: String,
     operator_name: Name,
     operator_phone: String,
@@ -627,22 +731,10 @@ pub struct V3Operator {
     operator_logo_url: String,
 }
 
+//V3RailStations
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct V3Stations {  //also works for AFR stations
-    //top level
-    update_time: String,
-    update_interval: i64,
-    src_update_time: String,
-    src_update_interval: i64,
-    authority_code: String,
-    stations: Vec<V3Station>,
-    count: i64,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "PascalCase")]
-pub struct V3Station { 
+pub struct V3RailStation { 
     #[serde(rename = "StationUID")]
     station_uid: String,
     #[serde(rename = "StationID")]
@@ -657,24 +749,8 @@ pub struct V3Station {
     station_url: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "PascalCase")]
-pub struct V3GeneralTrainTimetables {
-    //top level
-    update_time: String,
-    update_interval: i64,
-    src_update_time: String,
-    src_update_interval: i64,
-    authority_code: String,
-    effective_date: String,
-    expire_date: String,
-    src_version: String,
-    timetable_name: String,
-    validity_desciption: String,
-    train_timetables: Vec<V3TrainTimetable>,
-    count: i64,
-}
 
+//V3GeneralTrainTimetable
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct V3TrainTimetable {
@@ -715,38 +791,20 @@ pub struct V3TrainInfo {
     note: String,
 }
 
+//V3RailShapes
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct V3Shapes {
-    //top level
+pub struct V3RailShape {
+    line_no: String,
+    #[serde(rename = "LineID")]
+    line_id: String,
+    line_name: Name,
+    geometry: String,
     update_time: String,
-    update_interval: i64,
-    src_update_time: String,
-    src_update_interval: i64,
-    authority_code: String,
-    shapes: Vec<Shape>,
-    count: i64,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "PascalCase")]
-pub struct V3OdFares {
-    //top level
-    update_time: String,
-    update_interval: i64,
-    src_update_time: String,
-    src_update_interval: i64,
-    authority_code: String,
-    effective_date: String,
-    expire_date: String,
-    src_version: String,
-    #[serde(rename = "ODFares")]
-    od_fares: Vec<RailFare>,
-    count: i64,
-}
 
-pub type BusRtFrequency = Vec<BusRtFrequencyElement>; //top level
-
+//BusRtFrequency
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct BusRtFrequencyElement {
@@ -780,8 +838,7 @@ pub struct BusRtFrequencyElement {
     update_time: String,
 }
 
-pub type BusRtStops = Vec<BusRtStop>; //top level
-
+//BusRtStops
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct BusRtStop {
@@ -821,8 +878,7 @@ pub struct BusRtStop {
     update_time: String,
 }
 
-pub type BusEta = Vec<BusEtaElement>; //top level
-
+//BusEta
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct BusEtaElement {
@@ -870,7 +926,7 @@ pub struct Estimate {
     vehicle_stop_status: i64,
 }
 
-pub type BusAlerts = Vec<BusAlert>; //top level
+//BusAlerts
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct BusAlert {
@@ -952,19 +1008,7 @@ pub struct Trip {
     trip_dep_time: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "PascalCase")]
-pub struct TrainLiveBoard {
-    //top level
-    update_time: String,
-    update_interval: i64,
-    src_update_time: String,
-    src_update_interval: i64,
-    authority_code: String,
-    train_live_boards: Vec<TrainLiveBoardElement>,
-    count: i64,
-}
-
+//TrailLiveBoard
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct TrainLiveBoardElement {
@@ -981,19 +1025,7 @@ pub struct TrainLiveBoardElement {
     update_time: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "PascalCase")]
-pub struct StationLiveBoard {
-    //top level
-    update_time: String,
-    update_interval: i64,
-    src_update_time: String,
-    src_update_interval: i64,
-    authority_code: String,
-    station_live_boards: Vec<StationLiveBoardElement>,
-    count: i64,
-}
-
+//StationLiveBoardElement
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct StationLiveBoardElement {
@@ -1016,19 +1048,6 @@ pub struct StationLiveBoardElement {
     delay_time: i64,
     running_status: i64,
     update_time: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "PascalCase")]
-pub struct RailAlerts {
-    //top level for Metro alert and TRA alerts
-    update_time: String,
-    update_interval: i64,
-    src_update_time: String,
-    src_update_interval: i64,
-    authority_code: String,
-    alerts: Vec<RailAlert>,
-    count: i64,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -1116,8 +1135,7 @@ pub struct Train {
     train_no: String,
 }
 
-pub type MetroLiveBoard = Vec<MetroLiveBoardElement>; //top level
-
+//MetroLiveBoard
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct MetroLiveBoardElement {
@@ -1141,8 +1159,7 @@ pub struct MetroLiveBoardElement {
     update_time: String,
 }
 
-pub type MetroStationTimeTable = Vec<MetroStationTimeTableElement>; //top level
-
+//MetroStationTimeTable
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct MetroStationTimeTableElement {
@@ -1200,8 +1217,7 @@ pub struct Timetable {
     stopping_pattern_id: String,
 }
 
-pub type ThsrAlertInfo = Vec<ThsrAlertInfoElement>; //top level
-
+//THSRAlertInfo
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct ThsrAlertInfoElement {
