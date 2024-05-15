@@ -26,7 +26,8 @@ pub type ThsrAlertInfo = Vec<ThsrAlertInfoElement>; //top level
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct V3RailOperators { //top level
+pub struct V3RailOperators {
+    //top level
     update_time: String,
     update_interval: i64,
     src_update_time: String,
@@ -38,7 +39,8 @@ pub struct V3RailOperators { //top level
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct V3RailStations {  //top level //also works for AFR stations
+pub struct V3RailStations {
+    //top level //also works for AFR stations
     update_time: String,
     update_interval: i64,
     src_update_time: String,
@@ -50,7 +52,8 @@ pub struct V3RailStations {  //top level //also works for AFR stations
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct V3GeneralTrainTimetables { //top level
+pub struct V3GeneralTrainTimetables {
+    //top level
     update_time: String,
     update_interval: i64,
     src_update_time: String,
@@ -67,7 +70,8 @@ pub struct V3GeneralTrainTimetables { //top level
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct V3RailShapes { //top level
+pub struct V3RailShapes {
+    //top level
     update_time: String,
     update_interval: i64,
     src_update_time: String,
@@ -79,7 +83,8 @@ pub struct V3RailShapes { //top level
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct V3OdFares {    //top level
+pub struct V3OdFares {
+    //top level
     update_time: String,
     update_interval: i64,
     src_update_time: String,
@@ -95,7 +100,8 @@ pub struct V3OdFares {    //top level
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct TrainLiveBoard {    //top level
+pub struct TrainLiveBoard {
+    //top level
     update_time: String,
     update_interval: i64,
     src_update_time: String,
@@ -107,7 +113,8 @@ pub struct TrainLiveBoard {    //top level
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct StationLiveBoard {    //top level
+pub struct StationLiveBoard {
+    //top level
     update_time: String,
     update_interval: i64,
     src_update_time: String,
@@ -119,7 +126,8 @@ pub struct StationLiveBoard {    //top level
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct RailAlerts {    //top level  //Metro alert and TRA alerts
+pub struct RailAlerts {
+    //top level  //Metro alert and TRA alerts
     update_time: String,
     update_interval: i64,
     src_update_time: String,
@@ -128,7 +136,6 @@ pub struct RailAlerts {    //top level  //Metro alert and TRA alerts
     alerts: Vec<RailAlert>,
     count: i64,
 }
-
 
 //sublevel structs
 
@@ -734,7 +741,7 @@ pub struct V3RailOperator {
 //V3RailStations
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct V3RailStation { 
+pub struct V3RailStation {
     #[serde(rename = "StationUID")]
     station_uid: String,
     #[serde(rename = "StationID")]
@@ -749,14 +756,13 @@ pub struct V3RailStation {
     station_url: String,
 }
 
-
 //V3GeneralTrainTimetable
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct V3TrainTimetable {
     train_info: V3TrainInfo,
     stop_times: Vec<StopTime>,
-    service_day: ServiceDay
+    service_day: ServiceDay,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -802,7 +808,6 @@ pub struct V3RailShape {
     geometry: String,
     update_time: String,
 }
-
 
 //BusRtFrequency
 #[derive(Debug, Serialize, Deserialize)]

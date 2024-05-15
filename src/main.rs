@@ -5,6 +5,7 @@ use reqwest::{header::AUTHORIZATION, header::CONTENT_TYPE, *};
 use serde_json::*;
 use std::{collections::HashMap, env, error::Error, fs::File, path::Path};
 //use std::io::Write;
+use std::{thread, time::Duration};
 
 static AUTH_URL: &str =
     "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token";
@@ -14,17 +15,13 @@ static URL_HEAD: &str = "https://tdx.transportdata.tw/api/basic";
 async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     //let mut output = File::create("ilha_formosa.json")?;
 
-    let endpoint_links: HashMap<String, > = vec![
-        //rt bus
+    let city_bus_endpoints: Vec<String> = vec![
+        //rt bus by city
         "/v2/Bus/RealTimeByFrequency/City/city".to_string(),
         "/v2/Bus/RealTimeNearStop/City/city".to_string(),
         "/v2/Bus/EstimatedTimeOfArrival/City/city".to_string(),
         "/v2/Bus/Alert/City/city".to_string(),
-        "/v2/Bus/RealTimeByFrequency/InterCity".to_string(),
-        "/v2/Bus/RealTimeNearStop/InterCity".to_string(),
-        "/v2/Bus/EstimatedTimeOfArrival/InterCity".to_string(),
-        "/v2/Bus/Alert/InterCity".to_string(),
-        //static bus
+        //static bus by city
         "/v2/Bus/Operator/City/city".to_string(),
         "/v2/Bus/Stop/City/city".to_string(),
         "/v2/Bus/Route/City/city".to_string(),
@@ -32,6 +29,15 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         "/v2/Bus/FirstLastTripInfo/City/city".to_string(),
         "/v2/Bus/Shape/City/city".to_string(),
         "/v2/Bus/RouteFare/City/city".to_string(),
+    ];
+
+    let intercity_bus_endpoints = vec![
+         //rt intercity bus
+        "/v2/Bus/RealTimeByFrequency/InterCity".to_string(),
+        "/v2/Bus/RealTimeNearStop/InterCity".to_string(),
+        "/v2/Bus/EstimatedTimeOfArrival/InterCity".to_string(),
+        "/v2/Bus/Alert/InterCity".to_string(),
+        //static intercity bus
         "/v2/Bus/Operator/InterCity".to_string(),
         "/v2/Bus/Stop/InterCity".to_string(),
         "/v2/Bus/Route/InterCity".to_string(),
@@ -39,22 +45,29 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         "/v2/Bus/FirstLastTripInfo/InterCity".to_string(),
         "/v2/Bus/Shape/InterCity".to_string(),
         "/v2/Bus/RouteFare/InterCity".to_string(),
+    ];
+
+    let metro_endpoints = vec![
+        //rt metro
+        "/v2/Rail/Metro/LiveBoard/metrosystem".to_string(),
+        "/v2/Rail/Metro/StationTimeTable/metrosystem".to_string(),
+        "/v2/Rail/Metro/Alert/metrosystem".to_string(),
+        "/v2/Rail/THSR/AlertInfo".to_string(),
+        //static metro
+        "/v2/Rail/Metro/Station/metrosystem".to_string(),
+        "/v2/Rail/Metro/Route/metrosystem".to_string(),
+        "/v2/Rail/Metro/FirstLastTimetable/metrosystem".to_string(),
+        "/v2/Rail/Metro/Frequency/metrosystem".to_string(),
+        "/v2/Rail/Metro/Shape/metrosystem".to_string(),
+        "/v2/Rail/Metro/ODFare/metrosystem".to_string(),
+    ];
+    let other_rail_endpoints = vec![
         //rt rail
         "/v3/Rail/TRA/TrainLiveBoard".to_string(),
         "/v3/Rail/TRA/StationLiveBoard".to_string(),
         "/v3/Rail/TRA/Alert".to_string(),
-        "/v2/Rail/Metro/LiveBoard/railsystem".to_string(),
-        "/v2/Rail/Metro/StationTimeTable/railsystem".to_string(),
-        "/v2/Rail/Metro/Alert/railsystem".to_string(),
-        "/v2/Rail/THSR/AlertInfo".to_string(),
         //static rail
-        "/v2/Rail/Operator".to_string(),
-        "/v2/Rail/Metro/Station/railsystem".to_string(),
-        "/v2/Rail/Metro/Route/railsystem".to_string(),
-        "/v2/Rail/Metro/FirstLastTimetable/railsystem".to_string(),
-        "/v2/Rail/Metro/Frequency/railsystem".to_string(),
-        "/v2/Rail/Metro/Shape/railsystem".to_string(),
-        "/v2/Rail/Metro/ODFare/railsystem".to_string(),
+        "/v2/Rail/Operator".to_string(), //also for metro
         "/v2/Rail/THSR/Station".to_string(), //theres only one line so they dont have routes
         "/v2/Rail/THSR/GeneralTimetable".to_string(), //calender, trips, stop times
         "/v2/Rail/THSR/Shape".to_string(),
@@ -97,7 +110,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         "LienchiangCounty".to_string(),
     ];
 
-    let railsystem = vec![
+    let metrosystem: Vec<String> = vec![
         "TRTC".to_string(), //has live
         "KRTC".to_string(), //has live
         "KLRT".to_string(), //has live
@@ -139,65 +152,55 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
 
     let data_header = auth_response.split_once("\":\"").unwrap().1;
     let access_token = format!("Bearer {}", data_header.split_once("\",").unwrap().0);
+    
+    for endpoint in intercity_bus_endpoints {
+        fetch_query(&endpoint, &access_token, &client).await?;
+    }
 
-    let endpoint = "/v2/Rail/THSR/GeneralTimetable"; //"/v2/Bus/RouteFare/City/Taipei";
+    for mut endpoint in city_bus_endpoints {
+        for location in city.iter() {
+            endpoint = endpoint.replace("city", &location);
+        }
+        fetch_query(&endpoint, &access_token, &client).await?; 
+    }
+
+    for mut endpoint in metro_endpoints {
+        for location in metrosystem.iter() {
+            endpoint = endpoint.replace("metrosystem", &location);
+        }
+        fetch_query(&endpoint, &access_token, &client).await?; 
+
+    }
+     for endpoint in other_rail_endpoints {
+        
+        fetch_query(&endpoint, &access_token, &client).await?;
+     }
+     Ok(())
+}
+
+async fn fetch_query(endpoint:&str, access_token: &String, client: &Client) -> Result<(), Box<dyn Error + Send + Sync>> {
     let query_url = format!("{}{}", URL_HEAD, endpoint);
-    println!("{}", query_url);
+    print!("{}\t", query_url);
+    thread::sleep(Duration::from_secs(1));
 
-    let _raw = client
+    let _ = client
         .get(&query_url)
-        .header(AUTHORIZATION, &access_token)
+        .header(AUTHORIZATION, access_token)
         .send()
         .await?
-        .json::<ThsrGeneralTimetables>()
+        .text()
         .await?;
 
-    if let Some(jdata) = client
+    if let Some(_) = client
         .get(&query_url)
-        .header(AUTHORIZATION, &access_token)
+        .header(AUTHORIZATION, access_token)
         .send()
         .await?
-        .json::<ThsrGeneralTimetables>()
+        .json::<BusRoutes>()
         .await
         .ok()
     {
-        print!("{:?}", jdata);
-        //write!(output, "{:?}", jdata).expect("file dne");
+        print!("\tok\t");
     }
-
-    /*
-    let list_item_counter: usize = 0;
-    for mut endpoint in endpoint_links {
-        if list_item_counter < city.len() {
-            endpoint = endpoint.replace("city", &city[list_item_counter]);
-        }
-        if list_item_counter < railsystem.len() {
-            endpoint = endpoint.replace("railsystem", &railsystem[list_item_counter]);
-        }
-        let query_url = format!("{}{}", URL_HEAD, endpoint);
-
-        let data = client
-            .get(&query_url)
-            .header(AUTHORIZATION, &access_token)
-            .send()
-            .await?
-            .text()
-            .await?;
-        print!("{:?}", data); //checks if the data is even there
-
-        if let Some(data) = client
-            .get(&query_url)
-            .header(AUTHORIZATION, &access_token)
-            .send()
-            .await?
-            .json::<TrainLiveBoard>()
-            .await
-            .ok()
-        {
-            print!("{:?}", data);
-        }
-
-        write!(output, "{}", data).expect("file dne");
-    }*/
     Ok(())
 }
