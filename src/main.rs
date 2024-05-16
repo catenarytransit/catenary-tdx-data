@@ -30,7 +30,6 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         "/v2/Bus/EstimatedTimeOfArrival/City/city".to_string(),
         "/v2/Bus/Alert/City/city".to_string(),
     ];
-
     let ic_bus = vec![
         //static intercity bus
         "/v2/Bus/Route/InterCity".to_string(),
@@ -46,7 +45,6 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         "/v2/Bus/EstimatedTimeOfArrival/InterCity".to_string(),
         "/v2/Bus/Alert/InterCity".to_string(),
     ];
-
     let metro = vec![
         //static metro
         "/v2/Rail/Metro/Station/metrosystem".to_string(),
@@ -84,7 +82,6 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         "/v3/Rail/TRA/Alert".to_string(),
         "/v2/Rail/THSR/AlertInfo".to_string(),
     ];
-
     let city: Vec<String> = vec![
         "Taipei".to_string(),
         "NewTaipei".to_string(),
@@ -109,7 +106,6 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         "PenghuCounty".to_string(),
         "LienchiangCounty".to_string(),
     ];
-
     let metrosystem: Vec<String> = vec![
         "TRTC".to_string(), //has live
         "KRTC".to_string(), //has live
@@ -374,7 +370,7 @@ async fn fetch(
     client: &Client,
 ) -> Result<Response, Box<dyn Error + Send + Sync>> {
     let query_url = format!("{}{}", URL_HEAD, endpoint);
-    print!("{}\t", query_url);
+    println!("{}\t", query_url);
     thread::sleep(Duration::from_secs(1));
 
     Ok(client
