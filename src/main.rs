@@ -371,7 +371,7 @@ async fn fetch(
 ) -> Result<Response, Box<dyn Error + Send + Sync>> {
     let query_url = format!("{}{}", URL_HEAD, endpoint);
     println!("{}\t", query_url);
-    thread::sleep(Duration::from_secs(1));
+    thread::sleep(Duration::from_secs(5));
 
     Ok(client
         .get(&query_url)

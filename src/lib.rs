@@ -38,7 +38,8 @@ pub struct V3RailOperators {
     src_update_time: Option<String>,
     src_update_interval: Option<i64>,
     authority_code: Option<String>,
-    operators: Option<Vec<V3RailOperator>>,
+    #[serde(default)]
+    operators: Vec<V3RailOperator>,
     count: Option<i64>,
 }
 
@@ -51,7 +52,8 @@ pub struct V3RailRoutes {
     src_update_time: Option<String>,
     src_update_interval: Option<i64>,
     authority_code: Option<String>,
-    routes: Option<Vec<V3RailRoute>>,
+    #[serde(default)]
+    routes: Vec<V3RailRoute>,
     count: Option<i64>,
 }
 
@@ -64,7 +66,8 @@ pub struct V3RailStations {
     src_update_time: Option<String>,
     src_update_interval: Option<i64>,
     authority_code: Option<String>,
-    stations: Option<Vec<V3RailStation>>,
+    #[serde(default)]
+    stations: Vec<V3RailStation>,
     count: Option<i64>,
 }
 
@@ -82,7 +85,8 @@ pub struct V3GeneralTrainTimetables {
     src_version: Option<String>,
     timetable_name: Option<String>,
     validity_desciption: Option<String>,
-    train_timetables: Option<Vec<V3TrainTimetable>>,
+    #[serde(default)]
+    train_timetables: Vec<V3TrainTimetable>,
     count: Option<i64>,
 }
 
@@ -95,7 +99,8 @@ pub struct V3RailShapes {
     src_update_time: Option<String>,
     src_update_interval: Option<i64>,
     authority_code: Option<String>,
-    shapes: Option<Vec<V3RailShape>>,
+    #[serde(default)]
+    shapes: Vec<V3RailShape>,
     count: Option<i64>,
 }
 
@@ -112,7 +117,8 @@ pub struct V3OdFares {
     expire_date: Option<String>,
     src_version: Option<String>,
     #[serde(rename = "ODFares")]
-    od_fares: Option<Vec<RailFare>>,
+    #[serde(default)]
+    od_fares: Vec<RailFare>,
     count: Option<i64>,
 }
 
@@ -125,7 +131,8 @@ pub struct TrainLiveBoard {
     src_update_time: Option<String>,
     src_update_interval: Option<i64>,
     authority_code: Option<String>,
-    train_live_boards: Option<Vec<TrainLiveBoardElement>>,
+    #[serde(default)]
+    train_live_boards: Vec<TrainLiveBoardElement>,
     count: Option<i64>,
 }
 
@@ -138,7 +145,8 @@ pub struct StationLiveBoard {
     src_update_time: Option<String>,
     src_update_interval: Option<i64>,
     authority_code: Option<String>,
-    station_live_boards: Option<Vec<StationLiveBoardElement>>,
+    #[serde(default)]
+    station_live_boards: Vec<StationLiveBoardElement>,
     count: Option<i64>,
 }
 
@@ -151,7 +159,8 @@ pub struct RailAlerts {
     src_update_time: Option<String>,
     src_update_interval: Option<i64>,
     authority_code: Option<String>,
-    alerts: Option<Vec<RailAlert>>,
+    #[serde(default)]
+    alerts: Vec<RailAlert>,
     count: Option<i64>,
 }
 
@@ -166,12 +175,14 @@ pub struct BusRoute {
     #[serde(rename = "RouteID")]
     route_id: Option<String>,
     has_sub_routes: Option<bool>,
-    operators: Option<Vec<RouteOperator>>,
+    #[serde(default)]
+    operators: Vec<RouteOperator>,
     #[serde(rename = "AuthorityID")]
     authority_id: Option<String>,
     #[serde(rename = "ProviderID")]
     provider_id: Option<String>,
-    sub_routes: Option<Vec<SubRoute>>,
+    #[serde(default)]
+    sub_routes: Vec<SubRoute>,
     bus_route_type: Option<i64>,
     route_name: Option<Name>,
     departure_stop_name_zh: Option<String>,
@@ -207,7 +218,8 @@ pub struct SubRoute {
     sub_route_uid: Option<String>,
     #[serde(rename = "SubRouteID")]
     sub_route_id: Option<String>,
-    operator_i_ds: Option<Vec<String>>,
+    #[serde(default)]
+    operator_i_ds: Vec<String>,
     sub_route_name: Option<Name>,
     headsign: Option<String>,
     headsign_en: Option<String>,
@@ -293,8 +305,10 @@ pub struct BusSchedule {
     operator_id: Option<String>,
     operator_code: Option<String>,
     operator_no: Option<String>,
-    timetables: Option<Vec<BusTimetable>>,
-    frequencys: Option<Vec<BusFrequency>>,
+    #[serde(default)]
+    timetables: Vec<BusTimetable>,
+    #[serde(default)]
+    frequencys: Vec<BusFrequency>,
     update_time: Option<String>,
     #[serde(rename = "VersionID")]
     version_id: Option<i64>,
@@ -308,7 +322,8 @@ pub struct BusFrequency {
     min_headway_mins: Option<i64>,
     max_headway_mins: Option<i64>,
     service_day: Option<ServiceDay>,
-    special_days: Option<Vec<SpecialDay>>,
+    #[serde(default)]
+    special_days: Vec<SpecialDay>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -331,7 +346,8 @@ pub struct ServiceDay {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct SpecialDay {
-    dates: Option<Vec<String>>,
+    #[serde(default)]
+    dates: Vec<String>,
     date_period: Option<DatePeriod>,
     service_status: Option<i64>,
     description: Option<String>,
@@ -359,8 +375,10 @@ pub struct BusTimetable {
     trip_id: Option<String>,
     is_low_floor: Option<bool>,
     service_day: Option<ServiceDay>,
-    special_days: Option<Vec<SpecialDay>>,
-    stop_times: Option<Vec<BusStopTime>>,
+    #[serde(default)]
+    special_days: Vec<SpecialDay>,
+    #[serde(default)]
+    stop_times: Vec<BusStopTime>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -394,7 +412,8 @@ pub struct FirstLastTripInfoElement {
     sub_route_id: Option<String>,
     sub_route_name: Option<Name>,
     direction: Option<i64>,
-    first_last_trips: Option<Vec<FirstLastTrip>>,
+    #[serde(default)]
+    first_last_trips: Vec<FirstLastTrip>,
     update_time: Option<String>,
     #[serde(rename = "VersionID")]
     version_id: Option<i64>,
@@ -446,10 +465,13 @@ pub struct BusRouteFareElement {
     fare_pricing_type: Option<i64>,
     is_free_bus: Option<i64>,
     is_for_all_sub_routes: Option<i64>,
-    section_fares: Option<Vec<SectionFare>>,
-    stage_fares: Option<Vec<OdFare>>,
+    #[serde(default)]
+    section_fares: Vec<SectionFare>,
+    #[serde(default)]
+    stage_fares: Vec<OdFare>,
     #[serde(rename = "ODFares")]
-    od_fares: Option<Vec<OdFare>>,
+    #[serde(default)]
+    od_fares: Vec<OdFare>,
     update_time: Option<String>,
 }
 
@@ -459,7 +481,8 @@ pub struct OdFare {
     direction: Option<i64>,
     origin_stop: Option<DestinationStop>,
     destination_stop: Option<DestinationStop>,
-    fares: Option<Vec<Fare>>,
+    #[serde(default)]
+    fares: Vec<Fare>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -479,14 +502,17 @@ pub struct Fare {
     fare_class: Option<i64>,
     cabin_class: Option<i64>,
     price: Option<i64>,
-    discount_periods: Option<Vec<DiscountPeriod>>,
+    #[serde(default)]
+    discount_periods: Vec<DiscountPeriod>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct SectionFare {
-    buffer_zones: Option<Vec<BufferZone>>,
-    fares: Option<Vec<Fare>>,
+    #[serde(default)]
+    buffer_zones: Vec<BufferZone>,
+    #[serde(default)]
+    fares: Vec<Fare>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -604,7 +630,8 @@ pub struct RailFrequency {
     train_type: Option<i64>,
     service_day: Option<ServiceDay>,
     operation_time: Option<OperationTime>,
-    headways: Option<Vec<Headway>>,
+    #[serde(default)]
+    headways: Vec<Headway>,
     src_update_time: Option<String>,
     update_time: Option<String>,
     #[serde(rename = "VersionID")]
@@ -652,7 +679,8 @@ pub struct MetroFare {
     destination_station_id: Option<String>,
     destination_station_name: Option<Name>,
     train_type: Option<i64>,
-    fares: Option<Vec<MetFare>>,
+    #[serde(default)]
+    fares: Vec<MetFare>,
     travel_time: Option<i64>,
     travel_distance: Option<i64>,
     src_update_time: Option<String>,
@@ -687,7 +715,8 @@ pub struct ThsrGeneralTimetable {
 #[serde(rename_all = "PascalCase")]
 pub struct GeneralTimetable {
     general_train_info: Option<GeneralTrainInfo>,
-    stop_times: Option<Vec<StopTime>>,
+    #[serde(default)]
+    stop_times: Vec<StopTime>,
     service_day: Option<ServiceDay>,
     src_update_time: Option<String>,
 }
@@ -728,7 +757,8 @@ pub struct RailFare {
     destination_station_id: Option<String>,
     destination_station_name: Option<Name>,
     direction: Option<i64>,
-    fares: Option<Vec<Fare>>,
+    #[serde(default)]
+    fares: Vec<Fare>,
     train_type: Option<i64>,
     travel_distance: Option<i64>,
     src_update_time: Option<String>,
@@ -802,7 +832,8 @@ pub struct V3RailRoute {
 #[serde(rename_all = "PascalCase")]
 pub struct V3TrainTimetable {
     train_info: Option<V3TrainInfo>,
-    stop_times: Option<Vec<StopTime>>,
+    #[serde(default)]
+    stop_times: Vec<StopTime>,
     service_day: Option<ServiceDay>,
 }
 
@@ -870,8 +901,8 @@ pub struct BusRtFrequencyElement {
     sub_route_name: Option<Name>,
     direction: Option<i64>,
     bus_position: Option<Position>,
-    speed: Option<i64>,
-    azimuth: Option<i64>,
+    speed: Option<f64>,
+    azimuth: Option<f64>,
     duty_status: Option<i64>,
     bus_status: Option<i64>,
     message_type: Option<i64>,
@@ -954,7 +985,8 @@ pub struct BusEtaElement {
     message_type: Option<i64>,
     next_bus_time: Option<String>,
     is_last_bus: Option<bool>,
-    estimates: Option<Vec<Estimate>>,
+    #[serde(default)]
+    estimates: Vec<Estimate>,
     data_time: Option<String>,
     trans_time: Option<String>,
     src_rec_time: Option<String>,
@@ -997,12 +1029,18 @@ pub struct BusAlert {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct Scope {
-    operators: Option<Vec<RouteOperator>>,
-    stops: Option<Vec<Stop>>,
-    stations: Option<Vec<Station>>,
-    routes: Option<Vec<Route>>,
-    sub_routes: Option<Vec<SubRouteAlert>>,
-    trips: Option<Vec<Trip>>,
+    #[serde(default)]
+    operators: Vec<RouteOperator>,
+    #[serde(default)]
+    stops: Vec<Stop>,
+    #[serde(default)]
+    stations: Vec<Station>,
+    #[serde(default)]
+    routes: Vec<Route>,
+    #[serde(default)]
+    sub_routes: Vec<SubRouteAlert>,
+    #[serde(default)]
+    trips: Vec<Trip>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -1122,11 +1160,16 @@ pub struct RailAlert {
 pub struct RailScope {
     network_list: Option<NetworkList>,
     network: Option<NetworkList>,
-    stations: Option<Vec<AlertStation>>,
-    lines: Option<Vec<Line>>,
-    routes: Option<Vec<AlertRoute>>,
-    trains: Option<Vec<Train>>,
-    line_sections: Option<Vec<LineSection>>,
+    #[serde(default)]
+    stations: Vec<AlertStation>,
+    #[serde(default)]
+    lines: Vec<Line>,
+    #[serde(default)]
+    routes: Vec<AlertRoute>,
+    #[serde(default)]
+    trains: Vec<Train>,
+    #[serde(default)]
+    line_sections: Vec<LineSection>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -1220,9 +1263,11 @@ pub struct MetroStationTimeTableElement {
     #[serde(rename = "DestinationStaionID")]
     destination_staion_id: Option<String>,
     destination_station_name: Option<Name>,
-    timetables: Option<Vec<Timetable>>,
+    #[serde(default)]
+    timetables: Vec<Timetable>,
     service_day: Option<MetroServiceDay>,
-    special_days: Option<Vec<MetroSpecialDay>>,
+    #[serde(default)]
+    special_days: Vec<MetroSpecialDay>,
     src_update_time: Option<String>,
     update_time: Option<String>,
     #[serde(rename = "VersionID")]
@@ -1290,5 +1335,6 @@ pub struct ThsrAlertInfoElement {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct ThsrScope {
-    line_sections: Option<Vec<LineSection>>,
+    #[serde(default)]
+    line_sections: Vec<LineSection>,
 }
