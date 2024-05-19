@@ -8,7 +8,7 @@ pub static URL_HEAD: &str = "https://tdx.transportdata.tw/api/basic";
 pub async fn get_token_header(
     client_id: &str,
     client_secret: &str,
-) -> Result<String, Box<dyn std::error::Error>> {
+) -> Result<String, Box<dyn std::error::Error + Sync + Send>> {
     let client = reqwest::Client::new();
 
     let auth_header = json!({
