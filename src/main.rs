@@ -5,8 +5,8 @@ use reqwest::{header::AUTHORIZATION, header::CONTENT_TYPE, *};
 use serde_json::*;
 use std::{collections::HashMap, env, error::Error, fs::File, path::Path};
 //use std::io::Write;
+use catenary_tdx_data::auth::{AUTH_URL, URL_HEAD};
 use std::{thread, time::Duration};
-use catenary_tdx_data::auth::{URL_HEAD,AUTH_URL};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
@@ -58,7 +58,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     let rail = [
         //static rail
         "/v2/Rail/Operator",              //also for metro
-        "/v2/Rail/THSR/Station", //theres only one line so they dont have routes
+        "/v2/Rail/THSR/Station",          //theres only one line so they dont have routes
         "/v2/Rail/THSR/GeneralTimetable", //calender, trips, stop times
         "/v2/Rail/THSR/Shape",
         "/v2/Rail/THSR/ODFare",
@@ -107,11 +107,8 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         "TRTC", //has live
         "KRTC", //has live
         "KLRT", //has live
-        "TYMC",
-        "TRTCMG", //gondola :D
-        "TMRT",
-        "NTMC",
-        "NTALRT",
+        "TYMC", "TRTCMG", //gondola :D
+        "TMRT", "NTMC", "NTALRT",
     ];
 
     let raw_path = match env::consts::ARCH {
@@ -127,10 +124,13 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     let secret: HashMap<String, String> =
         serde_json::from_reader(file).expect("error while reading");
 
+    let client = Client::new();
 
-        let client = Client::new();
-
-    let token = catenary_tdx_data::auth::get_token_header(secret.get("client_id").unwrap(), secret.get("client_secret").unwrap()).await?;
+    let token = catenary_tdx_data::auth::get_token_header(
+        secret.get("client_id").unwrap(),
+        secret.get("client_secret").unwrap(),
+    )
+    .await?;
 
     for loc in city.iter() {
         fetch(&bus[0].replace("city", loc), &token, &client)

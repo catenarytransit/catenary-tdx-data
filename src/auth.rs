@@ -5,7 +5,10 @@ pub static AUTH_URL: &str =
     "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token";
 pub static URL_HEAD: &str = "https://tdx.transportdata.tw/api/basic";
 
-pub async fn get_token_header(client_id: &str, client_secret: &str) -> Result<String, Box<dyn std::error::Error>> {
+pub async fn get_token_header(
+    client_id: &str,
+    client_secret: &str,
+) -> Result<String, Box<dyn std::error::Error>> {
     let client = reqwest::Client::new();
 
     let auth_header = json!({
@@ -23,10 +26,10 @@ pub async fn get_token_header(client_id: &str, client_secret: &str) -> Result<St
         .text()
         .await?;
 
-        let data_header = auth_response.split_once("\":\"").unwrap().1;
+    let data_header = auth_response.split_once("\":\"").unwrap().1;
 
-        match data_header.split_once("\",") {
-            Some((token, _)) => Ok(format!("Bearer {}", token)),
-            None => Err("Token not found".into()),
-        }
+    match data_header.split_once("\",") {
+        Some((token, _)) => Ok(format!("Bearer {}", token)),
+        None => Err("Token not found".into()),
+    }
 }
