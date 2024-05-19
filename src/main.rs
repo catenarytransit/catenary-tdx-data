@@ -1,11 +1,11 @@
 use catenary_tdx_data::*;
 use core::result::Result;
 //use iso8601::datetime;
-use reqwest::{header::AUTHORIZATION, header::CONTENT_TYPE, *};
-use serde_json::*;
+use reqwest::{header::AUTHORIZATION, *};
+//use serde_json::*;
 use std::{collections::HashMap, env, error::Error, fs::File, path::Path};
 //use std::io::Write;
-use catenary_tdx_data::auth::{AUTH_URL, URL_HEAD};
+use catenary_tdx_data::auth::URL_HEAD;
 use std::{thread, time::Duration};
 
 #[tokio::main]
