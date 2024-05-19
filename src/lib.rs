@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+pub mod auth;
+
 //just a lot of struct to deserialize (decerealize? un-cornflæke?) everything
 pub type Operators = Vec<Operator>; //top level works for v2 bus and rail
 
